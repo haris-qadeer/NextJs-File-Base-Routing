@@ -2,6 +2,8 @@ import AddressIcon from "../icons/address-icon";
 import DateIcon from "../icons/date-icon";
 import LogisticsItem from "./logistics-item";
 import classes from "./event-logistics.module.css";
+import Button from "../ui/button";
+import { Fragment } from "react";
 
 function EventLogistics(props) {
   const { date, address, image, imageAlt } = props;
