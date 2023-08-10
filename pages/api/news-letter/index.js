@@ -1,5 +1,3 @@
-import { MongoClient } from "mongodb";
-import { URL } from "../../../constant/CommonConstant";
 import { connectDataBase, insertDocument } from "../../../helpers/db-utils";
 const handler = async (req, res) => {
   if (req.method === "POST") {
