@@ -17,3 +17,5 @@ export const years = [
   { value: "2021", name: "2021" },
   { value: "2022", name: "2022" },
 ];
+export const URL =
+  "mongodb+srv://haris-qadeer:haris1234@cluster0.m1mbtwf.mongodb.net/events?retryWrites=true&w=majority";

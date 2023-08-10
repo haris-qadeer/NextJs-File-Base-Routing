@@ -1,21 +1,22 @@
-import { useRouter } from "next/router";
 import { Fragment, useEffect, useState } from "react";
-import EventList from "../../../components/events/event-list";
-import ResultsTitle from "../../../components/events/results-title";
-import Button from "../../../components/ui/button";
-import { getFilteredEvents } from "../../../helpers/api-utils";
-import ErrorAlert from "../../../components/ui/error-alert";
+import { useRouter } from "next/router";
 import useSWR from "swr";
+import Head from "next/head";
 
-const FilteredEventsPage = (props) => {
+import EventList from "../../components/events/event-list";
+import ResultsTitle from "../../components/events/results-title";
+import Button from "../../components/ui/button";
+import ErrorAlert from "../../components/ui/error-alert";
+import { getFilteredEvents } from "../../helpers/api-utils";
+
+function FilteredEventsPage(props) {
   const [loadedEvents, setLoadedEvents] = useState();
   const router = useRouter();
 
   const filterData = router.query.slug;
 
   const { data, error } = useSWR(
-    "https://nextjs-course-c81cc-default-rtdb.firebaseio.com/events.json",
-    (url) => fetch(url).then((res) => res.json())
+    "https://nextjs-course-c81cc-default-rtdb.firebaseio.com/events.json"
   );
 
   useEffect(() => {
@@ -33,11 +34,19 @@ const FilteredEventsPage = (props) => {
     }
   }, [data]);
 
+  let pageHeadData = (
+    <Head>
+      <title>Filtered Events</title>
+      <meta name="description" content={`A list of filtered events.`} />
+    </Head>
+  );
+
   if (!loadedEvents) {
     return (
-      <div className="center">
-        <p className="lds-dual-ring"></p>
-      </div>
+      <Fragment>
+        {pageHeadData}
+        <p className="center">Loading...</p>
+      </Fragment>
     );
   }
 
@@ -46,6 +55,16 @@ const FilteredEventsPage = (props) => {
 
   const numYear = +filteredYear;
   const numMonth = +filteredMonth;
+
+  pageHeadData = (
+    <Head>
+      <title>Filtered Events</title>
+      <meta
+        name="description"
+        content={`All events for ${numMonth}/${numYear}.`}
+      />
+    </Head>
+  );
 
   if (
     isNaN(numYear) ||
@@ -58,6 +77,7 @@ const FilteredEventsPage = (props) => {
   ) {
     return (
       <Fragment>
+        {pageHeadData}
         <ErrorAlert>
           <p>Invalid filter. Please adjust your values!</p>
         </ErrorAlert>
@@ -79,6 +99,7 @@ const FilteredEventsPage = (props) => {
   if (!filteredEvents || filteredEvents.length === 0) {
     return (
       <Fragment>
+        {pageHeadData}
         <ErrorAlert>
           <p>No events found for the chosen filter!</p>
         </ErrorAlert>
@@ -93,11 +114,12 @@ const FilteredEventsPage = (props) => {
 
   return (
     <Fragment>
+      {pageHeadData}
       <ResultsTitle date={date} />
       <EventList items={filteredEvents} />
     </Fragment>
   );
-};
+}
 
 // export async function getServerSideProps(context) {
 //   const { params } = context;
@@ -127,20 +149,20 @@ const FilteredEventsPage = (props) => {
 //     };
 //   }
 
-//   const filteredEvents = await getFilteredEvents({
-//     year: numYear,
-//     month: numMonth,
-//   });
+// const filteredEvents = await getFilteredEvents({
+//   year: numYear,
+//   month: numMonth,
+// });
 
-//   return {
-//     props: {
-//       events: filteredEvents,
-//       date: {
-//         year: numYear,
-//         month: numMonth,
-//       },
+// return {
+//   props: {
+//     events: filteredEvents,
+//     date: {
+//       year: numYear,
+//       month: numMonth,
 //     },
-//   };
+//   },
+// };
 // }
 
 export default FilteredEventsPage;
